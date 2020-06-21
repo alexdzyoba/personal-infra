@@ -1,8 +1,21 @@
+terraform {
+  backend "remote" {
+    hostname     = "app.terraform.io"
+    organization = "alexdzyoba"
+
+    workspaces {
+      name = "personal-infra"
+    }
+  }
+}
+
 provider "aws" {
   version = "~> 2.0"
   region  = "eu-north-1"
+  profile = "personal"
 }
 
+# Organizations
 resource "aws_organizations_organization" "personal-infra" {
   aws_service_access_principals = [
     "cloudtrail.amazonaws.com",
