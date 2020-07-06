@@ -24,8 +24,8 @@ resource "aws_organizations_organization" "personal-infra" {
   feature_set = "ALL"
 }
 
-# This is the organization master account. It was imported with
-# terraform import aws_organizations_account.master <account id>
+# This is the organization master account.
+# All other resources in this terraform module is created in this account.
 resource "aws_organizations_account" "master" {
   name  = "Alex Dzyoba"
   email = "alex.dzyoba@gmail.com"
