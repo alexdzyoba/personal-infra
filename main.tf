@@ -40,3 +40,9 @@ resource "aws_key_pair" "ssh" {
   key_name   = "main"
   public_key = "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIDQmcvrLGoSzk4IqpipsbrX3us2sAteJyIBsN+EZJgBP"
 }
+
+module "vpn" {
+  source = "./modules/vpn"
+
+  ssh_key_pair_name = aws_key_pair.ssh.key_name
+}
