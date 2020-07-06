@@ -38,7 +38,7 @@ resource "aws_organizations_account" "counter64" {
 
 resource "aws_key_pair" "ssh" {
   key_name   = "main"
-  public_key = "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIDQmcvrLGoSzk4IqpipsbrX3us2sAteJyIBsN+EZJgBP"
+  public_key = var.ssh_key
 }
 
 module "vpn" {
