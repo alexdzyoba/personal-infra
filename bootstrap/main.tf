@@ -36,6 +36,12 @@ resource "aws_organizations_account" "counter64" {
   email = "alex.dzyoba+counter64@gmail.com"
 }
 
+# For dzyoba.com blog and email infra
+resource "aws_organizations_account" "site" {
+  name  = "site"
+  email = "alex.dzyoba+site@gmail.com"
+}
+
 resource "aws_key_pair" "ssh" {
   key_name   = "main"
   public_key = var.ssh_key
