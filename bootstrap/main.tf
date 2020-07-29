@@ -4,7 +4,7 @@ terraform {
     organization = "alexdzyoba"
 
     workspaces {
-      name = "personal-infra"
+      name = "bootstrap"
     }
   }
 }
@@ -39,10 +39,4 @@ resource "aws_organizations_account" "counter64" {
 resource "aws_key_pair" "ssh" {
   key_name   = "main"
   public_key = var.ssh_key
-}
-
-module "vpn" {
-  source = "./modules/vpn"
-
-  ssh_key_pair_name = aws_key_pair.ssh.key_name
 }
