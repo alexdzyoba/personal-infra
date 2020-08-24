@@ -1,3 +1,5 @@
+data "aws_region" "current" {}
+
 resource "aws_s3_bucket" "emails" {
   bucket = "dzyoba-com-emails"
   acl    = "private"
@@ -188,4 +190,14 @@ resource "aws_lambda_permission" "allow_ses" {
   function_name  = aws_lambda_function.forwarder.function_name
   principal      = "ses.amazonaws.com"
   source_account = var.master_account_id
+}
+
+resource "aws_route53_record" "mx" {
+  zone_id = aws_route53_zone.site.zone_id
+  name    = aws_ses_domain_identity.site.domain
+  type    = "MX"
+  ttl     = "600"
+  records = [
+    "10 inbound-smtp.${data.aws_region.current.name}.amazonaws.com"
+  ]
 }
