@@ -29,16 +29,12 @@ resource "aws_ses_domain_identity" "site" {
   domain = aws_route53_zone.site.name
 }
 
-resource "aws_route53_record" "example_amazonses_verification_record" {
+resource "aws_route53_record" "ses_site_verification" {
   zone_id = aws_route53_zone.site.zone_id
   name    = "_amazonses.${aws_ses_domain_identity.site.id}"
   type    = "TXT"
   ttl     = "600"
   records = [aws_ses_domain_identity.site.verification_token]
-}
-
-resource "aws_ses_domain_dkim" "site" {
-  domain = aws_ses_domain_identity.site.domain
 }
 
 resource "aws_route53_record" "dkim" {
@@ -50,3 +46,8 @@ resource "aws_route53_record" "dkim" {
   ttl     = "600"
   records = ["${element(aws_ses_domain_dkim.site.dkim_tokens, count.index)}.dkim.amazonses.com"]
 }
+
+resource "aws_ses_domain_dkim" "site" {
+  domain = aws_ses_domain_identity.site.domain
+}
+
