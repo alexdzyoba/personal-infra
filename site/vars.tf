@@ -12,3 +12,9 @@ variable gitlab_pages_verification_record {
   description = "Unique string value for TXT DNS record to verify domain for Gitlab Pages"
   type        = string
 }
+
+variable email_bucket_prefix {
+  description = "S3 bucket prefix to store emails"
+  type        = string
+  default     = "emails/"
+}

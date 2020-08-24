@@ -25,6 +25,32 @@ resource "aws_s3_bucket_public_access_block" "emails_block_public_access" {
   restrict_public_buckets = true
 }
 
+resource aws_s3_bucket_policy "allow_ses_put" {
+  bucket = aws_s3_bucket.emails.id
+
+  policy = <<-EOF
+{
+    "Version": "2012-10-17",
+    "Statement": [
+        {
+            "Sid": "AllowSESPut",
+            "Effect": "Allow",
+            "Principal": {
+                "Service": "ses.amazonaws.com"
+            },
+            "Action": "s3:PutObject",
+            "Resource": "arn:aws:s3:::${aws_s3_bucket.emails.id}/*",
+            "Condition": {
+                "StringEquals": {
+                    "aws:Referer": "${var.master_account_id}"
+                }
+            }
+        }
+    ]
+}
+EOF
+}
+
 resource "aws_ses_domain_identity" "site" {
   domain = aws_route53_zone.site.name
 }
@@ -121,6 +147,39 @@ resource "aws_iam_role_policy" "allow_logs_ses_s3" {
   ]
 }
 EOF
+}
+
+resource "aws_ses_receipt_rule_set" "store_forward_set" {
+  rule_set_name = "StoreAndForwardRuleSet"
+}
+
+resource "aws_ses_receipt_rule" "store_forward" {
+  name          = "StoreAndForward"
+  rule_set_name = aws_ses_receipt_rule_set.store_forward_set.rule_set_name
+  enabled       = true
+
+  scan_enabled = true
+
+  s3_action {
+    position = 1
+
+    bucket_name       = aws_s3_bucket.emails.id
+    object_key_prefix = var.email_bucket_prefix
+  }
+
+  lambda_action {
+    position = 2
+
+    function_arn = aws_lambda_function.forwarder.arn
+  }
+
+  depends_on = [
+    aws_lambda_permission.allow_ses
+  ]
+}
+
+resource "aws_ses_active_receipt_rule_set" "activate_store_forward" {
+  rule_set_name = aws_ses_receipt_rule_set.store_forward_set.rule_set_name
 }
 
 resource "aws_lambda_permission" "allow_ses" {
