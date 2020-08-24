@@ -201,3 +201,7 @@ resource "aws_route53_record" "mx" {
     "10 inbound-smtp.${data.aws_region.current.name}.amazonaws.com"
   ]
 }
+
+resource aws_ses_email_identity "sender" {
+  email = "alex.dzyoba@gmail.com"
+}
