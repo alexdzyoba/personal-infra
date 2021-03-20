@@ -7,10 +7,18 @@ terraform {
       name = "bootstrap"
     }
   }
+
+  required_providers {
+    aws = {
+      source  = "hashicorp/aws"
+      version = "~> 3.0"
+    }
+  }
+
+  required_version = ">= 0.13"
 }
 
 provider "aws" {
-  version = "~> 2.0"
   region  = "eu-north-1"
   profile = "personal"
 }
@@ -40,6 +48,12 @@ resource "aws_organizations_account" "counter64" {
 resource "aws_organizations_account" "site" {
   name  = "site"
   email = "alex.dzyoba+site@gmail.com"
+}
+
+# For VPN
+resource "aws_organizations_account" "vpn" {
+  name  = "vpn"
+  email = "alex.dzyoba+vpn@gmail.com"
 }
 
 resource "aws_key_pair" "ssh" {
