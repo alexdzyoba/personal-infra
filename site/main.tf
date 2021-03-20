@@ -7,11 +7,19 @@ terraform {
       name = "site"
     }
   }
+
+  required_providers {
+    aws = {
+      source  = "hashicorp/aws"
+      version = "~> 3.0"
+    }
+  }
+
+  required_version = ">= 0.13"
 }
 
 provider "aws" {
-  version = "~> 2.0"
-  region  = "eu-west-1"
+  region = "eu-west-1"
 
   # Access this AWS account by assuming role for user in master account.
   # OrganizationAccountAccessRole is created by default for accounts in
